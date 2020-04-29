@@ -27,9 +27,9 @@ func main() {
 	fmt.Println(event)
 	action := event["action"].(string)
 	pull_request := event["pull_request"].(map[string]interface{})
-	merged := pull_request["merged"].(string)
+	merged := pull_request["merged"].(bool)
 
-	if action != "closed" || merged != "true" {
+	if action != "closed" || !merged {
 		fmt.Println("pull request not closed and merged")
 		os.Exit(0)
 	}
