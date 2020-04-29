@@ -19,6 +19,7 @@ func main() {
 
 	var github_event_path map[string]interface{}
 	json.Unmarshal([]byte(os.Getenv("GITHUB_EVENT_PATH")), &github_event_path)
+	fmt.Println(github_event_path)
 	action := github_event_path["action"].(string)
 	pull_request := github_event_path["pull_request"].(map[string]interface{})
 	merged := pull_request["merged"].(string)
