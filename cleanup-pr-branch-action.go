@@ -59,7 +59,7 @@ func main() {
 		os.Exit(1)
 	}
 	if *branch.Protected {
-		fmt.Printlnf("branch %s is protected", ref)
+		fmt.Printf("branch %s is protected", ref)
 		os.Exit(0)
 	}
 
