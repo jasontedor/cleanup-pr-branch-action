@@ -1,0 +1,6 @@
+name: "Cleanup PR Branch Action"
+description: "cleanup pr branch after when a pull request is merged"
+author: "Jason Tedor"
+runs:
+  using: "docker"
+  image: "Dockerfile"
