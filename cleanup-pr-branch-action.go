@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"os"
 
 	"github.com/google/go-github/github"
@@ -17,12 +18,15 @@ func main() {
 		os.Exit(1)
 	}
 
-	var github_event_path map[string]interface{}
-	fmt.Println(os.Getenv("GITHUB_EVENT_PATH"))
-	json.Unmarshal([]byte(os.Getenv("GITHUB_EVENT_PATH")), &github_event_path)
-	fmt.Println(github_event_path)
-	action := github_event_path["action"].(string)
-	pull_request := github_event_path["pull_request"].(map[string]interface{})
+	github_event_json, err := ioutil.ReadFile(os.Getenv("GITHUB_EVENT_PATH"))
+	if err != nil {
+		fmt.Printf("error reading event: %s", err.Error())
+	}
+	var event map[string]interface{}
+	json.Unmarshal(github_event_json, &event)
+	fmt.Println(event)
+	action := event["action"].(string)
+	pull_request := event["pull_request"].(map[string]interface{})
 	merged := pull_request["merged"].(string)
 
 	if action != "closed" || merged != "true" {
