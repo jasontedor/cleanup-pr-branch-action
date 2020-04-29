@@ -81,9 +81,9 @@ func main() {
 		os.Exit(0)
 	}
 
-	_, err = client.Git.DeleteRef(ctx, login, name, ref)
+	_, err = client.Git.DeleteRef(ctx, login, name, "heads/"+ref)
 	if err != nil {
-		fmt.Printf("error deleting branch %s from repository %s/%s: %s", ref, login, name, err.Error())
+		fmt.Printf("error deleting branch %s from repository %s/%s: %s", "heads/"+ref, login, name, err.Error())
 		os.Exit(1)
 	}
 }
