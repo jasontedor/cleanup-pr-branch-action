@@ -15,4 +15,4 @@ RUN mkdir /cleanup-pr-branch-action
 WORKDIR /cleanup-pr-branch-action
 COPY --from=0 /go/bin/cleanup-pr-branch-action .
 
-ENTRYPOINT ["cleanup-pr-branch-action"]
+ENTRYPOINT ["/cleanup-pr-branch-action/cleanup-pr-branch-action"]
