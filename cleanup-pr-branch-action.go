@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"os"
 
 	"github.com/google/go-github/github"
@@ -12,6 +13,7 @@ import (
 func main() {
 	github_token := os.Getenv("GITHUB_TOKEN")
 	if github_token == "" {
+		fmt.Println("GITHUB_TOKEN not set")
 		os.Exit(1)
 	}
 
@@ -22,6 +24,7 @@ func main() {
 	merged := pull_request["merged"].(string)
 
 	if action != "closed" || merged != "true" {
+		fmt.Println("pull request not closed and merged")
 		os.Exit(0)
 	}
 
@@ -42,17 +45,21 @@ func main() {
 	// what is the default branch for the repository
 	repository, _, err := client.Repositories.Get(ctx, login, name)
 	if err != nil {
+		fmt.Printf("error looking up repository %s/%s: %s", login, name, err.Error())
 		os.Exit(1)
 	}
 	if ref == *repository.DefaultBranch {
+		fmt.Printf("not deleting default branch %s", ref)
 		os.Exit(0)
 	}
 
 	branch, _, err := client.Repositories.GetBranch(ctx, login, name, ref)
 	if err != nil {
+		fmt.Printf("error getting branch %s from repository %s/%s: %s", ref, login, name, err.Error())
 		os.Exit(1)
 	}
 	if *branch.Protected {
+		fmt.Printlnf("branch %s is protected", ref)
 		os.Exit(0)
 	}
 
@@ -60,14 +67,17 @@ func main() {
 	options.Base = ref
 	pr, _, err := client.PullRequests.List(ctx, login, name, options)
 	if err != nil {
+		fmt.Printf("error listing pull requests with base %s from repository %s/%s: %s", ref, login, name, err.Error())
 		os.Exit(1)
 	}
 	if len(pr) > 0 {
+		fmt.Printf("branch %s from repository %s/%s is the base branch of pr %d", ref, login, name, pr[0].Number)
 		os.Exit(0)
 	}
 
 	_, err = client.Git.DeleteRef(ctx, login, name, ref)
 	if err != nil {
+		fmt.Printf("error deleting branch %s from repository %s/%s: %s", ref, login, name, err.Error())
 		os.Exit(1)
 	}
 }
