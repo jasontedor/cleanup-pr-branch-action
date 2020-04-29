@@ -11,6 +11,7 @@ RUN CGO_ENABLED=0 GOOS=linux go get github.com/google/go-github/github \
   && go install
 
 FROM alpine:3.9
+RUN apk --no-cache add ca-certificates
 RUN mkdir /cleanup-pr-branch-action
 WORKDIR /cleanup-pr-branch-action
 COPY --from=0 /go/bin/cleanup-pr-branch-action .
